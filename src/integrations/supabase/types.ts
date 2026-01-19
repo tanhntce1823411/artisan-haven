@@ -167,6 +167,7 @@ export type Database = {
           notes: string | null
           order_number: string
           payment_method: Database["public"]["Enums"]["payment_method"]
+          payment_status: string | null
           shipping_address: Json
           shipping_fee: number
           status: Database["public"]["Enums"]["order_status"]
@@ -174,6 +175,7 @@ export type Database = {
           total: number
           updated_at: string
           user_id: string | null
+          vnpay_transaction_id: string | null
         }
         Insert: {
           created_at?: string
@@ -181,6 +183,7 @@ export type Database = {
           notes?: string | null
           order_number: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
+          payment_status?: string | null
           shipping_address: Json
           shipping_fee?: number
           status?: Database["public"]["Enums"]["order_status"]
@@ -188,6 +191,7 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id?: string | null
+          vnpay_transaction_id?: string | null
         }
         Update: {
           created_at?: string
@@ -195,6 +199,7 @@ export type Database = {
           notes?: string | null
           order_number?: string
           payment_method?: Database["public"]["Enums"]["payment_method"]
+          payment_status?: string | null
           shipping_address?: Json
           shipping_fee?: number
           status?: Database["public"]["Enums"]["order_status"]
@@ -202,6 +207,7 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id?: string | null
+          vnpay_transaction_id?: string | null
         }
         Relationships: []
       }
@@ -341,14 +347,42 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "user"
       order_status:
         | "pending"
         | "processing"
@@ -483,6 +517,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       order_status: [
         "pending",
         "processing",
